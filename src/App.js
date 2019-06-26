@@ -1,17 +1,27 @@
-import React from 'react';
+import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  const testing = 'hi there!';
-  const greetingObj = {
-    firstName: 'Dan',
-    lastName: 'Huang',
-    greeting: function greeting() {
-      return `hello ${this.firstName} ${this.lastName}!`;
-    }
-  };
-  return <div>{greetingObj.greeting()}</div>;
+class App extends Component {
+  render() {
+    //added functional logic
+    const helloWorld = 'Welcome to the Road to learn React';
+
+    const greetingObj = {
+      firstName: 'Dan',
+      lastName: 'Huang',
+      age: 36,
+      greeting: function greeting() {
+        return `hello ${this.firstName} ${this.lastName}!`;
+      }
+    };
+    return (
+      <div>
+        <h1>{helloWorld}</h1>
+        {greetingObj.greeting()} who is {greetingObj.age}
+      </div>
+    );
+  }
 }
 
 export default App;
