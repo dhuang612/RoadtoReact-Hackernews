@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import columns from './columns';
+import React from 'react';
+import { columns } from './columns';
 const isSearched = searchTerm => {
   return function(item) {
     //a condition which returns T / F

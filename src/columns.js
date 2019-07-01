@@ -10,4 +10,4 @@ const columns = {
   }
 };
 
-export default columns;
+export { columns };

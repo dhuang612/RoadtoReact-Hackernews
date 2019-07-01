@@ -1,38 +1,36 @@
 import React, { Component } from 'react';
 import Table from './Table';
 import Search from './Search';
-import logo from './logo.svg';
 
 import './App.css';
 
-const list = [
-  {
-    title: 'React',
-    url: 'https://reactjs.org',
-    author: 'Jordan Walke',
-    num_comments: 3,
-    points: 4,
-    objectID: 0
-  },
-  {
-    title: 'Redux',
-    url: 'https://redux.js.org',
-    author: 'Dan Abramov, Andrew Clark',
-    num_comments: 2,
-    points: 5,
-    objectID: 1
-  }
-];
+const DEFAULT_QUERY = 'react';
+const PATH_BASE = 'https://hn.algolia.com/api/v1';
+const PATH_SEARCH = '/search';
+const PARAM_SEARCH = 'query=';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      list,
-      searchTerm: ''
+      result: null,
+      searchTerm: DEFAULT_QUERY
     };
     //bind this here or use arrow functions
   } //then define it
+  componentDidMount() {
+    const { searchTerm } = this.state;
+
+    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+      .then(response => response.json())
+      //transformed into a json data structure
+      .then(result => this.setSearchTopStories(result))
+      .catch(error => error);
+  }
+
+  setSearchTopStories = result => {
+    this.setState({ result });
+  };
 
   onDismiss = id => {
     function isNotId(item) {
@@ -46,8 +44,11 @@ class App extends Component {
   onSearchChange = event => this.setState({ searchTerm: event.target.value });
 
   render() {
-    //added functional logic
-    const { searchTerm, list } = this.state;
+    //deconstructed state
+    const { searchTerm, result } = this.state;
+    if (!result) {
+      return null;
+    }
     return (
       <div className="page">
         <div className="interactions">
@@ -55,10 +56,19 @@ class App extends Component {
             search
           </Search>
         </div>
-        <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
+        <Table
+          list={result.hits}
+          pattern={searchTerm}
+          onDismiss={this.onDismiss}
+        />
       </div>
     );
   }
 }
 
 export default App;
+
+/*
+pg 86
+need to go back and see about state being set after render within a component
+*/
