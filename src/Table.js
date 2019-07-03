@@ -1,17 +1,6 @@
 import React from 'react';
 import { columns } from './columns';
-const isSearched = searchTerm => {
-  return function(item) {
-    //a condition which returns T / F
-    return item.title.toLowerCase().includes(searchTerm.toLowerCase());
-  };
-};
-
-const Button = ({ onClick, className = '', children }) => (
-  <button onClick={onClick} className={className} type="button">
-    {children}
-  </button>
-);
+import Button from './button';
 
 const Table = ({ list, onDismiss }) => (
   <div className="table">
