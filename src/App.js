@@ -20,6 +20,7 @@ class App extends Component {
   } //then define it
   componentDidMount() {
     const { searchTerm } = this.state;
+    this.fetchSearchTopStories(searchTerm);
 
     fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
       .then(response => response.json())
@@ -33,34 +34,43 @@ class App extends Component {
   };
 
   onDismiss = id => {
-    function isNotId(item) {
-      return item.objectID !== id;
-    }
-
-    const updateList = this.state.list.filter(isNotId);
-    this.setState({ list: updateList });
+    const isNotId = item => item.objectID !== id;
+    //filter out items that don't match the id
+    const updatedHits = this.state.result.hits.filter(isNotId);
+    this.setState({
+      result: { ...this.state.result, hits: updatedHits }
+    });
   };
 
   onSearchChange = event => this.setState({ searchTerm: event.target.value });
-
+  onSearchSubmit = event => {
+    const { searchTerm } = this.state;
+    this.fetchSearchTopStories(searchTerm);
+    event.preventDefault();
+  };
+  fetchSearchTopStories = searchTerm => {
+    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+      .then(response => response.json())
+      .then(result => this.setSearchTopStories(result))
+      .catch(err => err);
+  };
   render() {
     //deconstructed state
     const { searchTerm, result } = this.state;
-    if (!result) {
-      return null;
-    }
     return (
       <div className="page">
         <div className="interactions">
-          <Search value={searchTerm} onChange={this.onSearchChange}>
+          <Search
+            value={searchTerm}
+            onChange={this.onSearchChange}
+            onSubmit={this.onSearchSubmit}
+          >
             search
           </Search>
         </div>
-        <Table
-          list={result.hits}
-          pattern={searchTerm}
-          onDismiss={this.onDismiss}
-        />
+        {result ? (
+          <Table list={result.hits} onDismiss={this.onDismiss} />
+        ) : null}
       </div>
     );
   }
@@ -71,4 +81,9 @@ export default App;
 /*
 pg 86
 need to go back and see about state being set after render within a component
+
+result.hits = the way the api is returning results to use.
+within our api call we are processing the info it is returning using this line
+.then(result => this.setSearchTopStories(result))
+we acess the results using result.hits
 */

@@ -13,9 +13,9 @@ const Button = ({ onClick, className = '', children }) => (
   </button>
 );
 
-const Table = ({ list, pattern, onDismiss }) => (
+const Table = ({ list, onDismiss }) => (
   <div className="table">
-    {list.filter(isSearched(pattern)).map(item => (
+    {list.map(item => (
       <div key={item.objectID} className="table-row">
         <span style={columns.largeColumn}>
           <a href={item.url}>{item.title}</a>
