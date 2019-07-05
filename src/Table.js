@@ -2,7 +2,7 @@ import React from 'react';
 import { columns } from './columns';
 import Button from './button';
 
-const Table = ({ list, onDismiss }) => (
+const Table = ({ list, onDismiss, saveArticle }) => (
   <div className="table">
     {list.map(item => (
       <div key={item.objectID} className="table-row">
@@ -18,6 +18,13 @@ const Table = ({ list, onDismiss }) => (
             className="button-inline"
           >
             Dismiss
+          </Button>
+
+          <Button
+            onClick={() => saveArticle(item.objectID)}
+            className="button-inline"
+          >
+            save
           </Button>
         </span>
       </div>

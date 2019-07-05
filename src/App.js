@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Table from './Table';
+import { Route, Link } from 'react-router-dom';
+import favorites from './favorites';
 import Search from './Search';
 import Button from './button';
 
@@ -23,7 +25,8 @@ class App extends Component {
       //reflects the search term
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
-      error: null
+      error: null,
+      favorites: []
     };
     //bind this here or use arrow functions
   } //then define it
@@ -56,6 +59,9 @@ class App extends Component {
       results: { ...results, [searchKey]: { hits: updatedHits, page } }
     });
   };
+  saveArticle = id => {
+    this.setState({ favorites: id });
+  };
   needsToSearchTopStories = searchTerm => !this.state.results[searchTerm];
   onSearchChange = event => this.setState({ searchTerm: event.target.value });
   onSearchSubmit = event => {
@@ -86,6 +92,7 @@ class App extends Component {
     return (
       <div className="page">
         <div className="interactions">
+          <Route exact path="/favorites" component={favorites} />
           <Search
             value={searchTerm}
             onChange={this.onSearchChange}
@@ -93,13 +100,20 @@ class App extends Component {
           >
             search
           </Search>
+          <span>
+            <Link to="./favorites">Saved Articles</Link>
+          </span>
         </div>
         {error ? (
           <div className="interactions">
             <p>Something went wrong. </p>
           </div>
         ) : (
-          <Table list={list} onDismiss={this.onDismiss} />
+          <Table
+            list={list}
+            onDismiss={this.onDismiss}
+            saveArticle={this.saveArticle}
+          />
         )}
         <div className="interactions">
           <Button
